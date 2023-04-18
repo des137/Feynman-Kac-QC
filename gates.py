@@ -1,8 +1,16 @@
+import numpy as np 
+from numpy import sin, cos, exp
+
 CX = np.array([
     [1, 0, 0, 0], 
     [0, 1, 0, 0], 
     [0, 0, 0, 1], 
     [0, 0, 1, 0]
+])
+
+H = 1/np.sqrt(2) * np.array([
+    [1, 1], 
+    [1, -1]
 ])
 
 def rx(theta):
@@ -32,3 +40,9 @@ def cry(theta):
     )
     return cry_
     
+def p(phi):
+    return np.array([
+        [1, 0], 
+        [0, exp(1j*phi)]
+    ])
+

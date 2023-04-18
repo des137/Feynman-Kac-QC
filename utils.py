@@ -1,3 +1,5 @@
+import numpy as np 
+
 def tensorprod(*args):
     matrix = 1
     for i in args:
