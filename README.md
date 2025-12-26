@@ -1,2 +1,3 @@
 # Feynman-Kac-QC
-Source code for the article: [A variational quantum algorithm for the Feynman-Kac formula](https://arxiv.org/abs/2108.10846).
+
+Source code for the article: [A variational quantum algorithm for the Feynman-Kac formula](https://quantum-journal.org/papers/q-2022-06-07-730/).
