@@ -1,8 +1,9 @@
 import numpy as np
+from numpy import pi
 import matplotlib.pyplot as plt
-from utils import expectation
+from src.utils import expectation
 
-# Need to include Ham and Ansatz
+# Need to include HAM and Ansatz
 
 # Parameters
 theta1 = np.arange(-pi, pi, 0.1)

@@ -1,15 +1,15 @@
-from utils import bra_ket
+import numpy as np
+from src.utils import bra_ket, conj_tp
 
-def nat_grad(theta, H, ansatz_, h=0.001):
-#     np.set_printoptions(precision=17)
+def parameter_shift(theta, H, ansatz_):
     theta = np.array(theta)
     len_th = len(theta)
     
     g = []
-    for i in range(len_th):
-        diff_ = np.zeros(len_th)
-        diff_[i] = h
-        vec_ = (ansatz_(theta + diff_) - ansatz_(theta))/h    
+    for i in range(len(theta)):
+        diff_ = np.zeros(len(theta))
+        diff_[i] = np.pi/2
+        vec_ = (ansatz_(theta + diff_) - ansatz_(theta - diff_))/2    
         g.append(vec_)
     g = np.array(g)
     
@@ -23,9 +23,9 @@ def nat_grad(theta, H, ansatz_, h=0.001):
 
     state = H @ ansatz_(theta)
     C = []
-    for i in range(len_th):
-        C.append(g[i], state)
+    for i in range(len(theta)):
+        C.append(bra_ket(g[i], state))
     C = np.array(C)   
 
     MC = np.linalg.pinv(M) @ C    
-    return np.real(MC)    
+    return np.real(MC)

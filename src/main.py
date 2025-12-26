@@ -1,10 +1,13 @@
-from utils import tensorprod, conj_tp, bra_ket, expectation
-from gates import cx, rx, ry, rz, cry
-from natgrad import nat_grad
+import numpy as np
+from numpy import pi
+from src.utils import tensorprod, conj_tp, bra_ket, expectation
+from src.gates import CX, rx, ry, rz, cry
+from src.natgrad import nat_grad
 
 # Define the computational basis state
 Zero = np.array([1, 0]).reshape(-1, 1)
-One = np.array([0, 1]).reshape(-1, 1)   
+One = np.array([0, 1]).reshape(-1, 1)
+I_ = np.eye(2)
 
 def evolve(initial_thetas, dt, TIMESTEPS, HAM, Ansatz):
     t_val = np.zeros([TIMESTEPS, len(initial_thetas)])
@@ -14,7 +17,7 @@ def evolve(initial_thetas, dt, TIMESTEPS, HAM, Ansatz):
         t_val[i] = t_val[i - 1] - dt * natgrad_
     return t_val    
 
-if __name__ == '__main__'    
+if __name__ == '__main__':
     # Ansatz
     def Ansatz(theta):
         theta = np.array(theta)    
