@@ -1,6 +1,6 @@
 # Feynman-Kac Quantum Computing
 
-[![arXiv](https://img.shields.io/badge/arXiv-2106.10066-b31b1b.svg)](https://arxiv.org/abs/2106.10066)
+[![arXiv](https://img.shields.io/badge/arXiv-2108.10846-b31b1b.svg)](https://arxiv.org/abs/2108.10846)
 [![Quantum Journal](https://img.shields.io/badge/Quantum-10.22331%2Fq--2022--06--07--730-blue)](https://quantum-journal.org/papers/q-2022-06-07-730/)
 
 Source code for the article: [A variational quantum algorithm for the Feynman-Kac formula](https://quantum-journal.org/papers/q-2022-06-07-730/).
