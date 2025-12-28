@@ -151,17 +151,15 @@ The natural gradient provides a more efficient optimization landscape compared t
 
 ## Citation
 
-If you use this code in your research, please cite:
-
 ```bibtex
-@article{kyriienko2022variational,
+@article{alghassi2022variational,
   title={A variational quantum algorithm for the Feynman-Kac formula},
-  author={Kyriienko, Oleksandr and Paine, Annie E and Elfving, Vincent E},
+  author={Alghassi, Hedayat and Deshmukh, Amol and Ibrahim, Noelle and Robles, Nicolas and Woerner, Stefan and Zoufal, Christa},
   journal={Quantum},
   volume={6},
   pages={730},
   year={2022},
-  publisher={Verlag der Österreichischen Akademie der Wissenschaften}
+  publisher={Verein zur F{\"o}rderung des Open Access Publizierens in den Quantenwissenschaften}
 }
 ```
 
