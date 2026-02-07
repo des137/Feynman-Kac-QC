@@ -7,7 +7,7 @@ Source code for the article: [A variational quantum algorithm for the Feynman-Ka
 
 ## Overview
 
-This repository implements a variational quantum algorithm for solving the Feynman-Kac formula, which is a fundamental tool in stochastic processes and mathematical finance. The algorithm uses quantum computing techniques to efficiently compute expectations of functionals of stochastic processes.
+This repository implements a variational quantum algorithm for solving the Feynman-Kac formula, a fundamental tool in stochastic processes and mathematical finance. The algorithm uses quantum computing techniques to efficiently compute expectations of functionals of stochastic processes.
 
 The implementation includes:
 - Quantum gate operations (Hadamard, rotation gates, controlled gates)
@@ -31,7 +31,6 @@ Feynman-Kac-QC/
 ├── feasibility_test.ipynb       # Jupyter notebook testing the approach feasibility
 ├── README.md                    # This file
 └── .gitignore                   # Git ignore rules
-
 ```
 
 ## Installation
@@ -80,7 +79,7 @@ You can import and use individual components:
 
 ```python
 from src.gates import rx, ry, rz, cry, CX, H
-from src.utils import tensorprod, expectation
+from src.utils import tensorprod, dagger, expectation
 from src.natgrad import nat_grad
 import numpy as np
 
@@ -126,9 +125,9 @@ Implements standard quantum gates:
 ### Utility Functions (`src/utils.py`)
 
 - `tensorprod(*args)`: Compute tensor product of multiple matrices
-- `conj_tp(qobj)`: Conjugate transpose
+- `dagger(qobj)`: Conjugate transpose (Hermitian adjoint)
 - `bra_ket(state1, state2)`: Inner product of quantum states
-- `expectation(H, state)`: Compute expectation value of Hamiltonian
+- `expectation(hamiltonian, state)`: Compute expectation value of Hamiltonian
 
 ### Natural Gradient (`src/natgrad.py`)
 

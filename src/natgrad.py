@@ -1,32 +1,51 @@
+"""Natural gradient descent via finite differences.
+
+Computes the quantum natural gradient using the Fubini-Study metric
+estimated with finite-difference derivatives of the ansatz.
+"""
+
 import numpy as np
-from src.utils import bra_ket, conj_tp
 
-def nat_grad(theta, H, ansatz_, h=0.001):
-#     np.set_printoptions(precision=17)
-    theta = np.array(theta)
-    len_th = len(theta)
-    
-    g = []
-    for i in range(len_th):
-        diff_ = np.zeros(len_th)
-        diff_[i] = h
-        vec_ = (ansatz_(theta + diff_) - ansatz_(theta))/h    
-        g.append(vec_)
-    g = np.array(g)
-    
-    M = np.zeros([len_th, len_th])
-    for i in range(len_th):
-        for j in range(len_th):
+from src.utils import bra_ket, dagger
+
+
+def nat_grad(theta, hamiltonian, ansatz, h=0.001):
+    """Return the natural gradient vector for parameter vector *theta*.
+
+    Parameters
+    ----------
+    theta : array_like
+        Current variational parameters.
+    hamiltonian : ndarray
+        Hamiltonian matrix.
+    ansatz : callable
+        Maps parameter vector to a quantum state (column vector).
+    h : float, optional
+        Finite-difference step size (default 0.001).
+    """
+    theta = np.asarray(theta, dtype=float)
+    n_params = len(theta)
+
+    # Finite-difference derivative vectors
+    psi = ansatz(theta)
+    grad_vecs = np.empty((n_params, *psi.shape), dtype=complex)
+    for i in range(n_params):
+        shift = np.zeros(n_params)
+        shift[i] = h
+        grad_vecs[i] = (ansatz(theta + shift) - psi) / h
+
+    # Fubini-Study metric tensor
+    projector = psi @ dagger(psi)
+    M = np.zeros((n_params, n_params))
+    for i in range(n_params):
+        for j in range(n_params):
             M[i, j] = np.real(
-                bra_ket(g[i], g[j])\
-              - bra_ket(g[i], ansatz_(theta) @ conj_tp(ansatz_(theta)) @ g[j])
-            )  
+                bra_ket(grad_vecs[i], grad_vecs[j])
+                - bra_ket(grad_vecs[i], projector @ grad_vecs[j])
+            )
 
-    state = H @ ansatz_(theta)
-    C = []
-    for i in range(len_th):
-        C.append(bra_ket(g[i], state))
-    C = np.array(C)   
+    # Energy gradient
+    H_psi = hamiltonian @ psi
+    C = np.array([bra_ket(grad_vecs[i], H_psi) for i in range(n_params)])
 
-    MC = np.linalg.pinv(M) @ C    
-    return np.real(MC)    
+    return np.real(np.linalg.pinv(M) @ C)

@@ -1,16 +1,29 @@
-import numpy as np 
+"""Linear-algebra utilities for quantum state manipulation.
+
+Provides tensor products, conjugate transpose (dagger), inner products,
+and expectation values.
+"""
+
+from functools import reduce
+
+import numpy as np
+
 
 def tensorprod(*args):
-    matrix = 1
-    for i in args:
-        matrix = np.kron(matrix, i)
-    return matrix
+    """Kronecker (tensor) product of an arbitrary number of matrices."""
+    return reduce(np.kron, args)
 
-def conj_tp(qobj):
-    return qobj.conj().T    
+
+def dagger(qobj):
+    """Conjugate transpose (Hermitian adjoint) of a matrix or vector."""
+    return qobj.conj().T
+
 
 def bra_ket(state1, state2):
-    return (conj_tp(state1) @ state2)[0]
+    """Inner product <state1|state2>."""
+    return (dagger(state1) @ state2)[0, 0]
 
-def expectation(H, state):
-    return np.real(bra_ket(state, H @ state))
+
+def expectation(hamiltonian, state):
+    """Real expectation value <state|H|state>."""
+    return np.real(bra_ket(state, hamiltonian @ state))

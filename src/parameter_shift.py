@@ -1,31 +1,49 @@
+"""Natural gradient descent via the parameter-shift rule.
+
+Computes the quantum natural gradient using analytic pi/2-shift
+derivatives of the ansatz instead of finite differences.
+"""
+
 import numpy as np
-from src.utils import bra_ket, conj_tp
 
-def parameter_shift(theta, H, ansatz_):
-    theta = np.array(theta)
-    len_th = len(theta)
-    
-    g = []
-    for i in range(len(theta)):
-        diff_ = np.zeros(len(theta))
-        diff_[i] = np.pi/2
-        vec_ = (ansatz_(theta + diff_) - ansatz_(theta - diff_))/2    
-        g.append(vec_)
-    g = np.array(g)
-    
-    M = np.zeros([len_th, len_th])
-    for i in range(len_th):
-        for j in range(len_th):
+from src.utils import bra_ket, dagger
+
+
+def parameter_shift(theta, hamiltonian, ansatz):
+    """Return the natural gradient vector using the parameter-shift rule.
+
+    Parameters
+    ----------
+    theta : array_like
+        Current variational parameters.
+    hamiltonian : ndarray
+        Hamiltonian matrix.
+    ansatz : callable
+        Maps parameter vector to a quantum state (column vector).
+    """
+    theta = np.asarray(theta, dtype=float)
+    n_params = len(theta)
+
+    # Parameter-shift derivative vectors
+    psi = ansatz(theta)
+    grad_vecs = np.empty((n_params, *psi.shape), dtype=complex)
+    for i in range(n_params):
+        shift = np.zeros(n_params)
+        shift[i] = np.pi / 2
+        grad_vecs[i] = (ansatz(theta + shift) - ansatz(theta - shift)) / 2
+
+    # Fubini-Study metric tensor
+    projector = psi @ dagger(psi)
+    M = np.zeros((n_params, n_params))
+    for i in range(n_params):
+        for j in range(n_params):
             M[i, j] = np.real(
-                bra_ket(g[i], g[j])\
-              - bra_ket(g[i], ansatz_(theta) @ conj_tp(ansatz_(theta)) @ g[j])
-            )  
+                bra_ket(grad_vecs[i], grad_vecs[j])
+                - bra_ket(grad_vecs[i], projector @ grad_vecs[j])
+            )
 
-    state = H @ ansatz_(theta)
-    C = []
-    for i in range(len(theta)):
-        C.append(bra_ket(g[i], state))
-    C = np.array(C)   
+    # Energy gradient
+    H_psi = hamiltonian @ psi
+    C = np.array([bra_ket(grad_vecs[i], H_psi) for i in range(n_params)])
 
-    MC = np.linalg.pinv(M) @ C    
-    return np.real(MC)
+    return np.real(np.linalg.pinv(M) @ C)
